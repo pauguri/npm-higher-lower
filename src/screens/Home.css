@@ -1,0 +1,158 @@
+.start-wrapper {
+  overflow: auto;
+}
+
+.start-btns {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+.start-section {
+  height: inherit;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 47%;
+}
+
+.start-btns button {
+  width: 100%;
+  line-height: 1.1;
+  font-size: 1.4em;
+  height: 80px;
+}
+
+.start-btns form select {
+  width: 100%;
+  height: 50px;
+  border-radius: 30px;
+  padding: 0 15px 0 15px;
+  font-family: inherit;
+  font-size: 20px;
+  background: #207a20;
+  border: 2px solid transparent;
+  color: white;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: all .2s;
+  text-align: center;
+}
+
+.start-btns form select:disabled {
+  background: gray;
+  color: darkgrey;
+  cursor: unset;
+}
+
+.start-btns form select:enabled:hover {
+  background: transparent;
+  color: gold;
+  border: 2px solid gold;
+}
+
+.start-btns form select.chosen {
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+  height: 50px;
+  font-size: unset;
+}
+
+select option {
+  color: black;
+  background: white;
+}
+
+.separator {
+  position: relative;
+  width: 1px;
+  height: inherit;
+  background: rgba(255, 255, 255, 0.5);
+  margin: 0 10px 0 10px;
+}
+
+.separator::after {
+  content: 'o';
+  position: absolute;
+  width: 10px;
+  height: 30px;
+  background: #181536;
+  top: 50%;
+  transform: translate(-50%, -50%)
+}
+
+.sample-mun {
+  color: gold;
+}
+
+#logo {
+  width: 85%;
+}
+
+.hs-list-btn {
+  margin: auto;
+  margin-top: 30px;
+  cursor: pointer;
+  width: fit-content;
+}
+
+.hs-list-btn span {
+  text-decoration: underline;
+}
+
+.hs-list {
+  max-height: 1000px;
+  padding-top: 15px;
+  overflow: hidden;
+  transition: all .5s;
+}
+
+.hs-list span {
+  color: gold;
+  font-weight: bold;
+}
+
+.hs-list p {
+  font-size: 1.1em;
+  margin-bottom: 15px;
+}
+
+.collapsed {
+  max-height: 0px;
+  opacity: 0;
+}
+
+@keyframes rotate-icon {
+  from {
+    transform: rotate(180deg)
+  }
+
+  to {
+    transform: rotate(0deg)
+  }
+}
+
+.rotate-icon {
+  animation: rotate-icon .2s;
+}
+
+@keyframes pound {
+  0% {
+    transform: scale(1)
+  }
+
+  50% {
+    transform: scale(1.3)
+  }
+
+  100% {
+    transform: scale(1)
+  }
+}
+
+.new-record {
+  color: gold;
+  animation: pound 2s infinite;
+  display: none;
+}

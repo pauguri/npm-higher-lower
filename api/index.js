@@ -1,41 +1,35 @@
-const express = require('express');
-const app = express();
-const cors = require('cors');
-app.use(cors());
+// const express = require('express');
+// const { createServer } = require('http');
+// const app = express();
+// const cors = require('cors');
+// app.use(cors());
+// const httpServer = createServer(app);
 
-const NpmApi = require('npm-api');
-const npm = new NpmApi();
-const npmStats = require('download-stats');
-const packages = require('./packages.json');
-const randomPackage = () => packages[Math.floor(Math.random() * packages.length)];
+const getRandomPackage = require('./get-random-npm-package');
 
-app.get('/randompackage', async (req, res) => {
+const { Server } = require("socket.io");
+const io = new Server(5000, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  }
+});
+console.log('listening on *:5000');
 
-  const package = randomPackage();
-  const repo = npm.repo(package);
-  console.log("Requested package: ", package);
+io.on('connection', (socket) => {
+  console.log('a user connected');
+  const packages = require('./packages.json');
 
-  // get package description
-  const packageData = await repo.package();
-  const description = packageData.description;
+  socket.on('get-package', (callback) => {
+    const packageData = getRandomPackage(packages);
+    callback(packageData);
+  });
 
-  let responseBody = {
-    package: package,
-    description: description
-  };
-
-  //get the number of downloads for the last week
-  npmStats.get.lastWeek(package, function (err, data) {
-    if (err) {
-      res.status(500).send(err);
-      return;
-    }
-
-    responseBody = Object.assign(responseBody, data);
-    res.status(200).send(responseBody);
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
   });
 });
 
-app.listen(5000, () => {
-  console.log('Server is running on port 5000');
+io.on('error', (err) => {
+  console.log(err);
 });
