@@ -6,14 +6,12 @@ import './App.css';
 function App() {
 
   return (
-    <main>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/play" element={<Game />} />
-        </Routes>
-      </BrowserRouter>
-    </main>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/play" element={<Game />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 

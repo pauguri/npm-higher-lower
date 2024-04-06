@@ -11,13 +11,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.5.2",
+    "@fortawesome/free-solid-svg-icons": "^6.5.2",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "autoprefixer": "^10.4.19",
     "npm-api": "^1.0.1",
     "postcss": "^8.4.38",
     "react": "^18.2.0",
+    "react-countup": "^6.5.3",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.3",
-    "socket.io-client": "^4.7.5",
     "tailwindcss": "^3.4.3"
   },
   "devDependencies": {

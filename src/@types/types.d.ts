@@ -1,4 +1,4 @@
-export type Package = {
+export type PackageType = {
   package: string;
   description: string;
   downloads: number;
@@ -6,7 +6,7 @@ export type Package = {
   end: string;
 };
 
-export type Response = {
-  status: number;
-  data: any;
-}
+// export type Response = {
+//   status: number;
+//   data: any;
+// }

@@ -1,35 +1,31 @@
-// const express = require('express');
-// const { createServer } = require('http');
-// const app = express();
-// const cors = require('cors');
-// app.use(cors());
-// const httpServer = createServer(app);
+const express = require('express');
+const app = express();
+const cors = require('cors');
+app.use(cors());
 
-const getRandomPackage = require('./get-random-npm-package');
+const packages = require('./packages.json');
+const getPackageData = require('./getPackageData');
 
-const { Server } = require("socket.io");
-const io = new Server(5000, {
-  cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST"],
+app.get('/packages', (req, res) => {
+  const count = req.query.count || 50;
+  const offset = req.query.offset || Math.floor(Math.random() * (packages.length - count));
+  const response = packages.slice(offset, offset + count);
+  res.status(200).json(response);
+});
+
+app.get('/package', async (req, res) => {
+  const packageName = req.query.name;
+
+  if (!packageName) {
+    return res.status(400).send("Missing package name");
   }
-});
-console.log('listening on *:5000');
 
-io.on('connection', (socket) => {
-  console.log('a user connected');
-  const packages = require('./packages.json');
-
-  socket.on('get-package', (callback) => {
-    const packageData = getRandomPackage(packages);
-    callback(packageData);
-  });
-
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
+  getPackageData(packageName, (packageData) => {
+    console.log(packageData);
+    res.status(packageData.status).send(packageData.data);
   });
 });
 
-io.on('error', (err) => {
-  console.log(err);
-});
+app.listen(5000, () => {
+  console.log('Server running on port 5000');
+})
