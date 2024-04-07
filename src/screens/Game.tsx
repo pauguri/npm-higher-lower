@@ -1,65 +1,70 @@
-import { useEffect, useState } from "react";
-import { PackageType } from "../@types/types";
+import { createContext, useEffect, useRef, useState } from "react";
+import { GameContextType, GuessablePackageType } from "../@types/types";
 
-import { GameLogic, gameLogicInstance } from "../gameLogic";
 import Package from "../components/Package";
+import { getPackage, getPackages } from "../apiHandler";
+
+export const GameContext = createContext<GameContextType>({ guessCurrentPkg: null });
 
 export default function Game() {
-  const [gameLogic] = useState<GameLogic>(gameLogicInstance);
-  // const [refPkg, setRefPkg] = useState<PackageType | null>({
-  //   package: "package",
-  //   description: "[![NPM version](https://img.shields.io/npm/v/@aws-sdk/eventstream-serde-config-resolver/latest.svg)](https://www.npmjs.com/package/@aws-sdk/eventstream-serde-config-resolver) [![NPM downloads](https://img.shields.io/npm/dm/@aws-sdk/eventstream-serde-confi)](https://www.npmjs.com/package/@aws-sdk/eventstream-serde-config-resolver)",
-  //   downloads: 200,
-  //   start: "start",
-  //   end: "end"
-  // });
-  // const [nextPkg, setNextPkg] = useState<PackageType | null>({
-  //   package: "package",
-  //   description: "description",
-  //   downloads: 200,
-  //   start: "start",
-  //   end: "end"
-  // });
-  const [refPkg, setRefPkg] = useState<PackageType | null>(null);
-  const [nextPkg, setNextPkg] = useState<PackageType | null>(null);
+
+  const pkgList = useRef<string[]>([]);
+  const [refPkg, setRefPkg] = useState<GuessablePackageType | null>(null);
+  const [currentPkg, setCurrentPkg] = useState<GuessablePackageType | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const getRandomPackageName = async () => {
+    // check if we have any packages left
+    if (pkgList.current.length === 0) {
+      pkgList.current = await getPackages();
+    }
+
+    const index = Math.floor(Math.random() * pkgList.current.length);
+    const pkg = pkgList.current[index];
+    pkgList.current.splice(index, 1);
+    return pkg;
+  }
+
+  const guessCurrentPkg = (isHigher: boolean) => {
+    if (refPkg && currentPkg && currentPkg.guessable) {
+
+      // Disable guessing for the current package
+      const currentPkgCopy = { ...currentPkg };
+      currentPkgCopy.guessable = false;
+      setCurrentPkg(currentPkgCopy);
+
+      if (refPkg.package.downloads - currentPkg.package.downloads < 0 === isHigher || refPkg.package.downloads - currentPkg.package.downloads === 0) {
+        console.log('Correct!');
+      } else {
+        console.log('Incorrect!');
+      }
+    }
+  }
+
+  // initialize the game
   useEffect(() => {
     setLoading(true);
     setRefPkg(null);
-    setNextPkg(null);
+    setCurrentPkg(null);
 
-    gameLogic.init()
-      .then(async () => {
-        const pkg1 = await gameLogic.getPackage();
-        if (!pkg1) {
-          throw new Error('Failed to get package');
-        } else {
-          setRefPkg(pkg1);
-        }
-        const pkg2 = await gameLogic.getPackage();
-        if (!pkg2) {
-          throw new Error('Failed to get package');
-        } else {
-          setNextPkg(pkg2);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [gameLogic]);
+    const init = async () => {
+      pkgList.current = await getPackages();
+      setRefPkg(await getPackage(await getRandomPackageName()));
+      setCurrentPkg(await getPackage(await getRandomPackageName(), true));
+    }
+    init().finally(() => setLoading(false));
+  }, []);
 
   return (
     <main className="text-white bg-dark-blue">
       {loading && <div>Loading...</div>}
-      {refPkg && nextPkg && (
-        <section className="flex w-screen h-screen max-md:flex-col">
-          <Package pkg={refPkg} className="bg-dark-blue" />
-          <Package pkg={nextPkg} className="bg-dark-yellow" guessable={true} />
-        </section>
+      {refPkg && currentPkg && (
+        <GameContext.Provider value={{ guessCurrentPkg }}>
+          <section className="flex w-screen h-screen max-md:flex-col">
+            <Package pkg={refPkg} className="bg-dark-blue" />
+            <Package pkg={currentPkg} className="bg-dark-yellow" />
+          </section>
+        </GameContext.Provider>
       )}
     </main>
   )

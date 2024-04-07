@@ -6,6 +6,15 @@ export type PackageType = {
   end: string;
 };
 
+export type GuessablePackageType = {
+  package: PackageType;
+  guessable: boolean;
+};
+
+export type GameContextType = {
+  guessCurrentPkg: ((isHigher: boolean) => void) | null;
+}
+
 // export type Response = {
 //   status: number;
 //   data: any;
