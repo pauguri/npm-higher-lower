@@ -1,0 +1,13 @@
+.transition-animation {
+  animation: transition 1s;
+}
+
+@keyframes transition {
+  0% {
+    right: 0%;
+  }
+
+  100% {
+    right: 50%;
+  }
+}

@@ -2,7 +2,7 @@ import CountUp from "react-countup"
 import { PackageType } from "../@types/types"
 import GuessButton from "./GuessButton"
 
-export default function Package({ pkg, showDownloads = true, animateDownloads = false, className = "" }: { pkg: PackageType, showDownloads?: boolean, animateDownloads?: boolean, className?: string }) {
+export default function Package({ pkg, showDownloads = false, animateDownloads = false, className = "" }: { pkg: PackageType, showDownloads?: boolean, animateDownloads?: boolean, className?: string }) {
 
 
 
