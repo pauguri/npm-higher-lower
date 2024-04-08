@@ -46,6 +46,17 @@ export default function Game() {
         setScore(score + 1);
         setHighScore(score + 1);
         setIsNewHighScore(trySaveHighScore(score + 1));
+
+        // get a new package
+        const getNewPakgage = async () => {
+          return await getPackage(await getRandomPackageName(), true);
+        }
+        const timeout = new Promise(resolve => setTimeout(resolve, 2000));
+        Promise.all([getNewPakgage(), timeout]).then(([newPkg]) => {
+          console.log(currentPkg);
+          setRefPkg(currentPkgCopy);
+          setCurrentPkg(newPkg);
+        });
       } else {
         console.log('Incorrect!');
       }
