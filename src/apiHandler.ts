@@ -1,4 +1,4 @@
-import { GuessablePackageType, PackageType } from "./@types/types";
+import { PackageType } from "./@types/types";
 
 export const getPackages = async (): Promise<string[]> => {
   const response = await fetch('http://localhost:5000/packages?count=10');
@@ -11,11 +11,11 @@ export const getPackages = async (): Promise<string[]> => {
   }
 }
 
-export const getPackage = async (name: string, guessable: boolean = false): Promise<GuessablePackageType | null> => {
+export const getPackage = async (name: string): Promise<PackageType | null> => {
   const response = await fetch(`http://localhost:5000/package/?` + new URLSearchParams({ name: name }));
   if (response.ok) {
     const data = await response.json();
-    return { package: data as PackageType, guessable } as GuessablePackageType;
+    return data as PackageType;
   } else {
     console.log(response.statusText);
     return null;

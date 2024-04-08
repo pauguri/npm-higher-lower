@@ -1,11 +1,12 @@
 import { createContext, useEffect, useRef, useState } from "react";
-import { GameContextType, GuessablePackageType } from "../@types/types";
+import { GameContextType, GuessablePackageType, PackageType } from "../@types/types";
 
 import Package from "../components/Package";
 import { getPackage, getPackages } from "../apiHandler";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCrown } from "@fortawesome/free-solid-svg-icons";
 import { getHighScore, trySaveHighScore } from "../highScoreHandler";
+import Loader from "../components/Loader";
 
 export const GameContext = createContext<GameContextType>({ guessCurrentPkg: null });
 
@@ -16,8 +17,9 @@ export default function Game() {
   const [highScore, setHighScore] = useState(0);
   const [isNewHighScore, setIsNewHighScore] = useState(false);
 
-  const [refPkg, setRefPkg] = useState<GuessablePackageType | null>(null);
-  const [currentPkg, setCurrentPkg] = useState<GuessablePackageType | null>(null);
+  const [refPkg, setRefPkg] = useState<PackageType | null>(null);
+  const [currentPkg, setCurrentPkg] = useState<PackageType | null>(null);
+  const [revealCurrentDownloads, setRevealCurrentDownloads] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const getRandomPackageName = async () => {
@@ -33,28 +35,31 @@ export default function Game() {
   }
 
   const guessCurrentPkg = (isHigher: boolean) => {
-    if (refPkg && currentPkg && currentPkg.guessable) {
+    if (refPkg && currentPkg && !revealCurrentDownloads) {
 
-      // Disable guessing for the current package
-      const currentPkgCopy = { ...currentPkg };
-      currentPkgCopy.guessable = false;
-      setCurrentPkg(currentPkgCopy);
+      // Reveal the current downloads
+      setRevealCurrentDownloads(true);
 
-      if (refPkg.package.downloads - currentPkg.package.downloads < 0 === isHigher || refPkg.package.downloads - currentPkg.package.downloads === 0) {
+      if (refPkg.downloads - currentPkg.downloads < 0 === isHigher || refPkg.downloads - currentPkg.downloads === 0) {
         console.log('Correct!');
-
-        setScore(score + 1);
-        setHighScore(score + 1);
-        setIsNewHighScore(trySaveHighScore(score + 1));
 
         // get a new package
         const getNewPakgage = async () => {
-          return await getPackage(await getRandomPackageName(), true);
+          return await getPackage(await getRandomPackageName());
         }
-        const timeout = new Promise(resolve => setTimeout(resolve, 2000));
+        const timeout = new Promise(resolve => setTimeout(resolve, 3000));
         Promise.all([getNewPakgage(), timeout]).then(([newPkg]) => {
-          console.log(currentPkg);
-          setRefPkg(currentPkgCopy);
+          // update score
+          setScore(score + 1);
+          const isHighScore = trySaveHighScore(score + 1);
+          if (isHighScore) {
+            setHighScore(score + 1);
+            setIsNewHighScore(true);
+          }
+
+          // update packages
+          setRevealCurrentDownloads(false);
+          setRefPkg(currentPkg);
           setCurrentPkg(newPkg);
         });
       } else {
@@ -68,6 +73,7 @@ export default function Game() {
     setLoading(true);
     setRefPkg(null);
     setCurrentPkg(null);
+    setRevealCurrentDownloads(false);
     setScore(0);
     setHighScore(getHighScore());
     setIsNewHighScore(false);
@@ -75,21 +81,21 @@ export default function Game() {
     const init = async () => {
       pkgList.current = await getPackages();
       setRefPkg(await getPackage(await getRandomPackageName()));
-      setCurrentPkg(await getPackage(await getRandomPackageName(), true));
+      setCurrentPkg(await getPackage(await getRandomPackageName()));
     }
     init().finally(() => setLoading(false));
   }, []);
 
   return (
     <main className="text-white bg-dark-blue">
-      {loading && <div>Loading...</div>}
+      <Loader active={loading} />
       {refPkg && currentPkg && (
         <GameContext.Provider value={{ guessCurrentPkg }}>
           <section className="relative flex w-screen h-screen max-md:flex-col">
             <Package pkg={refPkg} className="bg-dark-blue" />
-            <Package pkg={currentPkg} className="bg-dark-yellow" />
+            <Package pkg={currentPkg} showDownloads={revealCurrentDownloads} animateDownloads className="bg-dark-yellow" />
             <div className="absolute text-3xl font-bold max-md:-translate-y-1/2 left-4 top-1/2 md:-translate-x-1/2 md:top-4 md:left-1/2">{score}</div>
-            <div className={"absolute flex items-center justify-center gap-3 text-xl max-md:right-4 max-md:top-1/2 max-md:-translate-y-1/2 md:-translate-x-1/2 md:bottom-4 md:left-1/2" + (isNewHighScore ? ' text-yellow' : '')}>
+            <div className={"absolute flex items-center justify-center gap-3 text-xl max-md:right-4 max-md:top-1/2 max-md:-translate-y-1/2 md:-translate-x-1/2 md:bottom-4 md:left-1/2 transition-colors" + (isNewHighScore ? ' text-yellow' : '')}>
               <FontAwesomeIcon icon={faCrown} />
               <span>{highScore}</span>
             </div>
