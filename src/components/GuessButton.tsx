@@ -14,7 +14,7 @@ export default function GuessButton({ isTrue }: { isTrue: boolean }) {
   }
 
   return (
-    <button onClick={handleClick} className={"text-white border-2 border-transparent flex justify-center items-center gap-2.5 rounded-full font-bold p-2.5 text-xl max-w-64 w-3/4 hover:border-yellow hover:text-yellow hover:bg-transparent transition-colors " + (isTrue ? 'bg-green' : 'bg-red')}>
+    <button onClick={handleClick} className={"text-white border-2 border-transparent flex justify-center items-center gap-2.5 rounded-full font-bold p-1 md:p-2.5 text-lg md:text-xl max-w-64 w-3/4 hover:border-yellow hover:text-yellow hover:bg-transparent transition-colors " + (isTrue ? 'bg-green' : 'bg-red')}>
       <FontAwesomeIcon icon={isTrue ? faChevronUp : faChevronDown} />
       <span>{isTrue ? "MORE" : "LESS"}</span>
     </button>

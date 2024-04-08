@@ -3,12 +3,19 @@ import { GameContextType, GuessablePackageType } from "../@types/types";
 
 import Package from "../components/Package";
 import { getPackage, getPackages } from "../apiHandler";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCrown } from "@fortawesome/free-solid-svg-icons";
+import { getHighScore, trySaveHighScore } from "../highScoreHandler";
 
 export const GameContext = createContext<GameContextType>({ guessCurrentPkg: null });
 
 export default function Game() {
 
   const pkgList = useRef<string[]>([]);
+  const [score, setScore] = useState(0);
+  const [highScore, setHighScore] = useState(0);
+  const [isNewHighScore, setIsNewHighScore] = useState(false);
+
   const [refPkg, setRefPkg] = useState<GuessablePackageType | null>(null);
   const [currentPkg, setCurrentPkg] = useState<GuessablePackageType | null>(null);
   const [loading, setLoading] = useState(false);
@@ -35,6 +42,10 @@ export default function Game() {
 
       if (refPkg.package.downloads - currentPkg.package.downloads < 0 === isHigher || refPkg.package.downloads - currentPkg.package.downloads === 0) {
         console.log('Correct!');
+
+        setScore(score + 1);
+        setHighScore(score + 1);
+        setIsNewHighScore(trySaveHighScore(score + 1));
       } else {
         console.log('Incorrect!');
       }
@@ -46,6 +57,9 @@ export default function Game() {
     setLoading(true);
     setRefPkg(null);
     setCurrentPkg(null);
+    setScore(0);
+    setHighScore(getHighScore());
+    setIsNewHighScore(false);
 
     const init = async () => {
       pkgList.current = await getPackages();
@@ -60,9 +74,14 @@ export default function Game() {
       {loading && <div>Loading...</div>}
       {refPkg && currentPkg && (
         <GameContext.Provider value={{ guessCurrentPkg }}>
-          <section className="flex w-screen h-screen max-md:flex-col">
+          <section className="relative flex w-screen h-screen max-md:flex-col">
             <Package pkg={refPkg} className="bg-dark-blue" />
             <Package pkg={currentPkg} className="bg-dark-yellow" />
+            <div className="absolute text-3xl font-bold max-md:-translate-y-1/2 left-4 top-1/2 md:-translate-x-1/2 md:top-4 md:left-1/2">{score}</div>
+            <div className={"absolute flex items-center justify-center gap-3 text-xl max-md:right-4 max-md:top-1/2 max-md:-translate-y-1/2 md:-translate-x-1/2 md:bottom-4 md:left-1/2" + (isNewHighScore ? ' text-yellow' : '')}>
+              <FontAwesomeIcon icon={faCrown} />
+              <span>{highScore}</span>
+            </div>
           </section>
         </GameContext.Provider>
       )}
