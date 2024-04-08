@@ -25,7 +25,6 @@ export default function Game() {
   const [loading, setLoading] = useState(false);
 
   const [transitionPkg, setTransitionPkg] = useState<PackageType | null>(null);
-  const [animatingTransition, setAnimatingTransition] = useState(false);
 
   const getRandomPackageName = async () => {
     // check if we have any packages left
@@ -52,7 +51,7 @@ export default function Game() {
         const getNewPakgage = async () => {
           return await getPackage(await getRandomPackageName());
         }
-        const timeout = new Promise(resolve => setTimeout(resolve, 3000));
+        const timeout = new Promise(resolve => setTimeout(resolve, 2500));
         Promise.all([getNewPakgage(), timeout]).then(([newPkg]) => {
           // update score
           setScore(score + 1);
@@ -64,13 +63,8 @@ export default function Game() {
 
           // start transition
           setRevealCurrentDownloads(false);
-          setTransitionPkg(currentPkg);
-          setAnimatingTransition(true);
-
-          // set new current package on a small delay to allow the transition to start
-          setTimeout(() => {
-            setCurrentPkg(newPkg);
-          }, 100);
+          setTransitionPkg({ ...currentPkg });
+          setCurrentPkg(newPkg);
         });
       } else {
         console.log('Incorrect!');
@@ -81,7 +75,7 @@ export default function Game() {
   const handleTransitionEnd = () => {
     // end transition
     setRefPkg(transitionPkg);
-    setAnimatingTransition(false);
+    setTransitionPkg(null);
   }
 
   // initialize the game
@@ -111,9 +105,9 @@ export default function Game() {
             <Package pkg={refPkg} showDownloads className="bg-dark-blue" />
             <Package pkg={currentPkg} showDownloads={revealCurrentDownloads} animateDownloads className="bg-dark-yellow" />
 
-            {animatingTransition && (
-              <div className="!absolute right-0 z-10 w-1/2 h-full transition-animation" onAnimationEnd={handleTransitionEnd}>
-                <Package pkg={currentPkg} showDownloads />
+            {transitionPkg && (
+              <div className="absolute bottom-0 z-10 w-full h-1/2 md:right-0 md:w-1/2 md:h-full transition-animation" onAnimationEnd={handleTransitionEnd}>
+                <Package pkg={transitionPkg} showDownloads />
               </div>
             )}
 

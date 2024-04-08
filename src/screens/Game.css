@@ -1,13 +1,40 @@
 .transition-animation {
-  animation: transition 1s;
+  @apply animate-[transition-position-mobile] md:animate-[transition-position-desktop];
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
 }
 
-@keyframes transition {
+.transition-animation>div {
+  animation: transition-color 1s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes transition-position-mobile {
   0% {
-    right: 0%;
+    @apply bottom-0;
   }
 
   100% {
-    right: 50%;
+    @apply bottom-1/2;
+  }
+}
+
+@keyframes transition-position-desktop {
+  0% {
+    @apply right-0;
+  }
+
+  100% {
+    @apply right-1/2;
+  }
+}
+
+@keyframes transition-color {
+  0% {
+    @apply bg-dark-yellow;
+  }
+
+  100% {
+    @apply bg-dark-blue;
   }
 }
