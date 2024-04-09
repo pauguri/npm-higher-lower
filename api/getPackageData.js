@@ -2,13 +2,6 @@ const NpmApi = require('npm-api');
 const npm = new NpmApi();
 const npmStats = require('download-stats');
 
-// const getRandomPackageName = (packages) => {
-//   const index = Math.floor(Math.random() * packages.length);
-//   const packageName = packages[index];
-//   packages.splice(index, 1);
-//   return packageName;
-// };
-
 module.exports = async (packageName, callback) => {
   console.log("Requested package: \"" + packageName + "\"");
   const repo = npm.repo(packageName);
