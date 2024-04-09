@@ -52,9 +52,12 @@ export default function Game() {
     setHighScore(getHighScore());
     setIsNewHighScore(false);
 
-    pkgList.current = await getPackages();
-    setRefPkg(await getPackage(await getRandomPackageName()));
-    setCurrentPkg(await getPackage(await getRandomPackageName()));
+    const refPkgName = await getRandomPackageName();
+    const currentPkgName = await getRandomPackageName();
+    const [refPkgData, currentPkgData] = await Promise.all([getPackage(refPkgName), getPackage(currentPkgName)]);
+
+    setRefPkg(refPkgData);
+    setCurrentPkg(currentPkgData);
     setLoading(false);
   }
 

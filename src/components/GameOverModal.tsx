@@ -1,6 +1,6 @@
 import { faCrown, faHome, faRotateRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { GameContext } from "../screens/Game";
 import Button from "./Button";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +9,18 @@ import { GameContextType } from "../@types/types";
 export default function GameOverModal({ score, highScore, active = false, isNewHighScore = false }: { score: number, highScore: number, active?: boolean, isNewHighScore?: boolean }) {
   const { startGame } = useContext<GameContextType>(GameContext);
   const navigate = useNavigate();
+
+  const [localScore, setLocalScore] = useState(0);
+  const [localHighScore, setLocalHighScore] = useState(0);
+  const [localIsNewHighScore, setLocalIsNewHighScore] = useState(false);
+
+  useEffect(() => {
+    if (active) {
+      setLocalScore(score);
+      setLocalHighScore(highScore);
+      setLocalIsNewHighScore(isNewHighScore);
+    }
+  }, [active, score, highScore, isNewHighScore]);
 
   const handleTryAgain = () => {
     if (startGame) {
@@ -26,16 +38,16 @@ export default function GameOverModal({ score, highScore, active = false, isNewH
         <h2 className="text-3xl">Game Over</h2>
         <div className="flex flex-col items-center">
           <p className="text-xl text-yellow">score</p>
-          <p className="text-[70px] leading-none font-bold text-yellow">{score}</p>
+          <p className="text-[70px] leading-none font-bold text-yellow">{localScore}</p>
         </div>
-        {isNewHighScore ?
+        {localIsNewHighScore ?
           <p className="flex items-center gap-3 text-xl text-yellow">
             <FontAwesomeIcon icon={faCrown} />
             <span>New High Score!</span>
           </p> :
           <p className="flex items-center gap-3 text-xl">
             <span className="font-thin">High Score:</span>
-            <span>{highScore}</span>
+            <span>{localHighScore}</span>
           </p>
         }
         <Button clickHandler={handleTryAgain} className="font-bold bg-green">
