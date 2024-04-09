@@ -9,7 +9,7 @@ export default function Package({ pkg, showDownloads = false, animateDownloads =
   return (
     <div className={"relative flex flex-col gap-4 items-center justify-center w-full h-full p-4 md:p-8 lg:p-12 bg-dark-blue " + className}>
       <div className="flex flex-col items-center gap-1 text-center md:gap-2">
-        <h2 className="min-w-0 text-2xl md:text-4xl">{pkg.package}</h2>
+        <h2 className="min-w-0 font-mono text-2xl font-bold md:text-4xl">{pkg.package}</h2>
         <p className="font-thin md:text-xl line-clamp-3 md:line-clamp-6">{pkg.description}</p>
       </div>
       {

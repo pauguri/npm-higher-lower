@@ -9,8 +9,9 @@ import { getHighScore, trySaveHighScore } from "../highScoreHandler";
 import Loader from "../components/Loader";
 
 import "./Game.css";
+import GameOverModal from "../components/GameOverModal";
 
-export const GameContext = createContext<GameContextType>({ guessCurrentPkg: null });
+export const GameContext = createContext<GameContextType>({ guessCurrentPkg: null, startGame: null });
 
 export default function Game() {
 
@@ -37,6 +38,22 @@ export default function Game() {
     pkgList.current.splice(index, 1);
     return pkg;
   }
+
+  const startGame = async () => {
+    setLoading(true);
+    setRefPkg(null);
+    setCurrentPkg(null);
+    setRevealCurrentDownloads(false);
+    setScore(0);
+    setHighScore(getHighScore());
+    setIsNewHighScore(false);
+
+    pkgList.current = await getPackages();
+    setRefPkg(await getPackage(await getRandomPackageName()));
+    setCurrentPkg(await getPackage(await getRandomPackageName()));
+    setLoading(false);
+  }
+
 
   const guessCurrentPkg = (isHigher: boolean) => {
     if (refPkg && currentPkg && !revealCurrentDownloads) {
@@ -80,27 +97,15 @@ export default function Game() {
 
   // initialize the game
   useEffect(() => {
-    setLoading(true);
-    setRefPkg(null);
-    setCurrentPkg(null);
-    setRevealCurrentDownloads(false);
-    setScore(0);
-    setHighScore(getHighScore());
-    setIsNewHighScore(false);
-
-    const init = async () => {
-      pkgList.current = await getPackages();
-      setRefPkg(await getPackage(await getRandomPackageName()));
-      setCurrentPkg(await getPackage(await getRandomPackageName()));
-    }
-    init().finally(() => setLoading(false));
+    startGame();
   }, []);
 
   return (
     <main className="text-white bg-dark-blue">
       <Loader active={loading} />
+      <GameOverModal score={score} highScore={highScore} />
       {refPkg && currentPkg && (
-        <GameContext.Provider value={{ guessCurrentPkg }}>
+        <GameContext.Provider value={{ guessCurrentPkg, startGame }}>
           <section className="relative flex w-screen h-screen max-md:flex-col">
             <Package pkg={refPkg} showDownloads className="bg-dark-blue" />
             <Package pkg={currentPkg} showDownloads={revealCurrentDownloads} animateDownloads className="bg-dark-yellow" />

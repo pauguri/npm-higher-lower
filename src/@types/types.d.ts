@@ -13,6 +13,7 @@ export type GuessablePackageType = {
 
 export type GameContextType = {
   guessCurrentPkg: ((isHigher: boolean) => void) | null;
+  startGame: (() => void) | null;
 }
 
 // export type Response = {

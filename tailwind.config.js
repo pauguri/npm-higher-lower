@@ -14,7 +14,8 @@ export default {
         'yellow': '#ffd700'
       },
       fontFamily: {
-        'sans': ['Kanit', 'sans-serif']
+        'sans': ['Kanit', 'sans-serif'],
+        'mono': ['Space Mono', 'monospace'],
       },
       fontSize: {
         '5xl': '2.5rem',
