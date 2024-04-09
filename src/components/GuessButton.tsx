@@ -15,7 +15,7 @@ export default function GuessButton({ isTrue }: { isTrue: boolean }) {
   }
 
   return (
-    <Button clickHandler={handleClick} className={isTrue ? 'font-bold bg-green' : 'font-bold bg-red'}>
+    <Button onClick={handleClick} className={isTrue ? 'font-bold bg-green' : 'font-bold bg-red'}>
       <FontAwesomeIcon icon={isTrue ? faChevronUp : faChevronDown} />
       <span>{isTrue ? "MORE" : "LESS"}</span>
     </Button>

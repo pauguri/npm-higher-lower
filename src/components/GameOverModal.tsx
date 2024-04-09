@@ -50,11 +50,11 @@ export default function GameOverModal({ score, highScore, active = false, isNewH
             <span>{localHighScore}</span>
           </p>
         }
-        <Button clickHandler={handleTryAgain} className="font-bold bg-green">
+        <Button onClick={handleTryAgain} className="font-bold bg-green">
           <FontAwesomeIcon icon={faRotateRight} />
           <span>Try Again</span>
         </Button>
-        <Button clickHandler={handleBackToMenu} className="bg-red">
+        <Button onClick={handleBackToMenu} className="bg-red">
           <FontAwesomeIcon icon={faHome} />
           <span>Back to Menu</span>
         </Button>

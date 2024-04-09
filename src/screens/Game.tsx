@@ -1,19 +1,18 @@
 import { createContext, useEffect, useRef, useState } from "react";
-import { GameContextType, GuessablePackageType, PackageType } from "../@types/types";
+import { GameContextType, PackageType } from "../@types/types";
 
 import Package from "../components/Package";
 import { getPackage, getPackages } from "../apiHandler";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCrown } from "@fortawesome/free-solid-svg-icons";
 import { getHighScore, trySaveHighScore } from "../highScoreHandler";
-import Loader from "../components/Loader";
 
 import "./Game.css";
 import GameOverModal from "../components/GameOverModal";
 
 export const GameContext = createContext<GameContextType>({ guessCurrentPkg: null, startGame: null });
 
-export default function Game() {
+export default function Game({ loadingSetter: setLoading }: { loadingSetter: (loading: boolean) => void }) {
 
   const pkgList = useRef<string[]>([]);
   const [score, setScore] = useState(0);
@@ -23,7 +22,6 @@ export default function Game() {
   const [refPkg, setRefPkg] = useState<PackageType | null>(null);
   const [currentPkg, setCurrentPkg] = useState<PackageType | null>(null);
   const [revealCurrentDownloads, setRevealCurrentDownloads] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [gameOver, setGameOver] = useState(false);
 
   const [transitionPkg, setTransitionPkg] = useState<PackageType | null>(null);
@@ -114,7 +112,6 @@ export default function Game() {
   return (
     <main className="text-white bg-dark-blue">
       <GameContext.Provider value={{ guessCurrentPkg, startGame }}>
-        <Loader active={loading} />
         <GameOverModal score={score} highScore={highScore} isNewHighScore={isNewHighScore} active={gameOver} />
         {refPkg && currentPkg && (
           <section className="relative flex w-screen h-screen max-md:flex-col">
