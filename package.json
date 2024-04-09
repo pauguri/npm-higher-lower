@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://<github_username>.github.io/<app_repo>",
   "scripts": {
     "install": "cd ./api && npm install",
     "dev": "vite",
