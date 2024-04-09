@@ -3,9 +3,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext } from "react";
 import { GameContext } from "../screens/Game";
 import Button from "./Button";
+import { useNavigate } from "react-router-dom";
+import { GameContextType } from "../@types/types";
 
-export default function GameOverModal({ score, highScore, isNewHighScore = false }: { score: number, highScore: number, isNewHighScore?: boolean }) {
-  const { startGame } = useContext(GameContext);
+export default function GameOverModal({ score, highScore, active = false, isNewHighScore = false }: { score: number, highScore: number, active?: boolean, isNewHighScore?: boolean }) {
+  const { startGame } = useContext<GameContextType>(GameContext);
+  const navigate = useNavigate();
 
   const handleTryAgain = () => {
     if (startGame) {
@@ -14,11 +17,11 @@ export default function GameOverModal({ score, highScore, isNewHighScore = false
   }
 
   const handleBackToMenu = () => {
+    navigate('/');
   }
 
-
   return (
-    <div className="absolute inset-0 z-30 flex items-center justify-center bg-black bg-opacity-70">
+    <div className={"absolute inset-0 z-30 flex items-center justify-center bg-black bg-opacity-70 transition-opacity" + (active ? ' opacity-100' : ' opacity-0 pointer-events-none')}>
       <div className="flex flex-col items-center w-full gap-4 p-8 m-4 max-w-[500px] md:p-12 rounded-3xl bg-dark-blue">
         <h2 className="text-3xl">Game Over</h2>
         <div className="flex flex-col items-center">
@@ -35,7 +38,7 @@ export default function GameOverModal({ score, highScore, isNewHighScore = false
             <span>{highScore}</span>
           </p>
         }
-        <Button clickHandler={handleTryAgain} className="bg-green">
+        <Button clickHandler={handleTryAgain} className="font-bold bg-green">
           <FontAwesomeIcon icon={faRotateRight} />
           <span>Try Again</span>
         </Button>

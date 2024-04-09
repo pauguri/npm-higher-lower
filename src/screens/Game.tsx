@@ -24,6 +24,7 @@ export default function Game() {
   const [currentPkg, setCurrentPkg] = useState<PackageType | null>(null);
   const [revealCurrentDownloads, setRevealCurrentDownloads] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [gameOver, setGameOver] = useState(false);
 
   const [transitionPkg, setTransitionPkg] = useState<PackageType | null>(null);
 
@@ -40,7 +41,10 @@ export default function Game() {
   }
 
   const startGame = async () => {
+    console.log('Starting game...');
+    //return;
     setLoading(true);
+    setGameOver(false);
     setRefPkg(null);
     setCurrentPkg(null);
     setRevealCurrentDownloads(false);
@@ -85,6 +89,10 @@ export default function Game() {
         });
       } else {
         console.log('Incorrect!');
+
+        setTimeout(() => {
+          setGameOver(true);
+        }, 2500);
       }
     }
   }
@@ -102,10 +110,10 @@ export default function Game() {
 
   return (
     <main className="text-white bg-dark-blue">
-      <Loader active={loading} />
-      <GameOverModal score={score} highScore={highScore} />
-      {refPkg && currentPkg && (
-        <GameContext.Provider value={{ guessCurrentPkg, startGame }}>
+      <GameContext.Provider value={{ guessCurrentPkg, startGame }}>
+        <Loader active={loading} />
+        <GameOverModal score={score} highScore={highScore} isNewHighScore={isNewHighScore} active={gameOver} />
+        {refPkg && currentPkg && (
           <section className="relative flex w-screen h-screen max-md:flex-col">
             <Package pkg={refPkg} showDownloads className="bg-dark-blue" />
             <Package pkg={currentPkg} showDownloads={revealCurrentDownloads} animateDownloads className="bg-dark-yellow" />
@@ -122,8 +130,8 @@ export default function Game() {
               <span>{highScore}</span>
             </div>
           </section>
-        </GameContext.Provider>
-      )}
+        )}
+      </GameContext.Provider>
     </main>
   )
 }
