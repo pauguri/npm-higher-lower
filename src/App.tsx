@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { HashRouter, Route, Routes } from 'react-router-dom';
 import Home from './screens/Home';
 import Game from './screens/Game';
 import './App.css';
@@ -10,13 +10,13 @@ function App() {
 
   return (
     <>
-      <BrowserRouter>
+      <HashRouter>
         <Loader active={loading} />
         <Routes>
           <Route path="/" element={<Home loadingSetter={setLoading} />} />
           <Route path="/play" element={<Game loadingSetter={setLoading} />} />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </>
   )
 }
