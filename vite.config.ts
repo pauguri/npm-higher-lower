@@ -11,7 +11,6 @@ export default defineConfig({
   build: {
     outDir: 'docs',
     rollupOptions: {
-      external: ["react-router", "react-router-dom"],
       output: {
         globals: {
           react: "React",
