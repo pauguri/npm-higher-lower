@@ -7,5 +7,5 @@
 
 
 body {
-  @apply font-sans text-white;
+  @apply overflow-hidden font-sans text-white;
 }
