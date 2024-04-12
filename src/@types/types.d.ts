@@ -1,6 +1,7 @@
 export type PackageType = {
   package: string;
   description: string;
+  dependencies: { [key: string]: string };
   downloads: number;
   start: string;
   end: string;

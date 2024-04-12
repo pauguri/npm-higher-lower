@@ -10,10 +10,12 @@ module.exports = async (packageName, callback) => {
   // get package description
   const packageData = await repo.package();
   const description = packageData.description;
+  const dependencies = packageData.dependencies;
 
   let responseBody = {
     package: packageName,
-    description: description
+    description: description,
+    dependencies: dependencies
   };
 
   //get the number of downloads for the last week

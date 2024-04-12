@@ -5,9 +5,9 @@ main {
 }
 
 .bg-decor {
-  @apply absolute font-mono text-5xl font-bold text-white break-all pointer-events-none text-clip text-opacity-10 md:text-7xl;
+  @apply absolute font-mono text-5xl font-bold text-gray-600 break-all pointer-events-none text-clip text-opacity-20 md:text-7xl;
   width: calc(100vw + 200px);
-  height: calc(100vh + 200px);
+  height: calc(100vh + 400px);
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) rotate(-12deg);
